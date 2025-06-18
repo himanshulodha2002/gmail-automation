@@ -37,4 +37,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --all-extras
+      - run: make setup-db
       - run: make test
