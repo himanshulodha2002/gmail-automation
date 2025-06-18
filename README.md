@@ -34,13 +34,14 @@ A clean and modern Python project that connects to the Gmail API and processes e
     ```bash
     uv venv
     source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
-    uv pip install -r requirements.txt
+    uv sync
     ```
 
 4.  **Set up Google Cloud project and OAuth 2.0:**
 
     - Go to the [Google Cloud Console](https://console.cloud.google.com/).
     - Create a new project or select an existing one.
+    - Click on enable API and Services.
     - Enable the Gmail API.
     - Create OAuth 2.0 credentials (Desktop app).
     - Download `credentials.json` and place it in the project root.
