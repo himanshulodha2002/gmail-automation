@@ -12,25 +12,44 @@ A clean and modern Python project that connects to the Gmail API and processes e
 
 ## Setup
 
-1. **Install dependencies with uv:**
+1.  **Clone the repository:**
 
-   ```bash
-   uv sync
-   ```
+    ```bash
+    git clone https://github.com/yourusername/gmail-automation.git
+    cd gmail-automation
+    ```
 
-2. **Google API Setup:**
+2.  **Install `uv`:**
 
-   - Go to [Google Cloud Console](https://console.cloud.google.com)
-   - Create a new project or select existing one
-   - Enable Gmail API
-   - Create OAuth2 credentials (Desktop application)
-   - Download `credentials.json` and place in project root
+    ```bash
+    # On macOS & Linux
+    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-3. **Environment Setup:**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+    # On Windows
+    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+    ```
+
+3.  **Create virtual environment and install dependencies:**
+
+    ```bash
+    uv venv
+    source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
+    uv pip install -r requirements.txt
+    ```
+
+4.  **Set up Google Cloud project and OAuth 2.0:**
+
+    - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+    - Create a new project or select an existing one.
+    - Enable the Gmail API.
+    - Create OAuth 2.0 credentials (Desktop app).
+    - Download `credentials.json` and place it in the project root.
+
+5.  **Environment Setup:**
+    ```bash
+    cp .env.example .env
+    # Edit .env with your configuration
+    ```
 
 ## Usage
 
