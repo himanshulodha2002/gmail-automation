@@ -12,10 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s lint
 
   format:
@@ -23,10 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s format
 
   type_check:
@@ -34,10 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s type_check
 
   test:
@@ -45,10 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s test
 
   test_integration:
@@ -56,10 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s test_integration
 
   test_all:
@@ -67,10 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s test_all
 
   docs:
@@ -78,10 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s docs
 
   safety:
@@ -89,8 +68,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
-        with:
-          version: "latest"
-      - run: uv python install
-      - run: uv sync --locked --all-extras
+      - run: uv sync --all-extras
       - run: uvx nox -s safety
