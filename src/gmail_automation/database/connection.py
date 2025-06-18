@@ -1,23 +1,47 @@
+"""Database connection and session management."""
+
+import os
+from contextlib import contextmanager
+from typing import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.ext.declarative import declarative_base
-from gmail_automation.config.settings import Settings
+from sqlalchemy.orm import Session, sessionmaker
 
-# Create a base class for declarative models
-Base = declarative_base()
+from .models import Base
 
-# Create a database engine
-engine = create_engine(Settings.DATABASE_URL, echo=True)
 
-# Create a configured "Session" class
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+class Database:
+    """Database connection manager."""
+    
+    def __init__(self, database_url: str = "sqlite:///emails.db"):
+        self.database_url = database_url
+        self.engine = create_engine(database_url, echo=False)
+        self.SessionLocal = sessionmaker(
+            autocommit=False, 
+            autoflush=False, 
+            bind=self.engine
+        )
+        
+    def create_tables(self) -> None:
+        """Create all database tables."""
+        Base.metadata.create_all(bind=self.engine)
+    
+    @contextmanager
+    def get_session(self) -> Generator[Session, None, None]:
+        """Get database session with automatic cleanup."""
+        session = self.SessionLocal()
+        try:
+            yield session
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
-# Create a scoped session for thread safety
-db_session = scoped_session(SessionLocal)
 
-def get_db():
-    """Dependency that provides a database session."""
-    try:
-        yield db_session
-    finally:
-        db_session.remove()
+# Global database instance
+def get_database() -> Database:
+    """Get database instance from environment."""
+    database_url = os.getenv("DATABASE_URL", "sqlite:///emails.db")
+    return Database(database_url)

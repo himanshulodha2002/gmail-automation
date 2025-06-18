@@ -1,123 +1,104 @@
-# Gmail Automation System
+# Gmail Automation
 
-This project is a Python-based email automation system that integrates with the Gmail API. It allows users to fetch emails, process them based on defined rules, and perform actions such as marking emails as read or moving them to specific folders.
+A clean and modern Python project that connects to the Gmail API and processes emails using rule-based logic.
 
 ## Features
 
-- **Gmail API Integration**: Fetch emails using Google's official Python client library.
-- **Rule Engine**: Process emails based on JSON-defined rules with various conditions and actions.
-- **Database Storage**: Store emails and rule executions in a relational database (PostgreSQL/MySQL/SQLite3).
-- **Extensible Action System**: Define actions to be taken based on rule evaluations.
+- 🔐 OAuth2 authentication with Gmail API
+- 📧 Fetch emails using Gmail REST API
+- 💾 Store emails in SQLite database
+- 📋 Rule-based email processing with JSON configuration
+- 🎯 Actions: mark as read/unread, move messages
+
+## Setup
+
+1. **Install dependencies with uv:**
+
+   ```bash
+   uv sync
+   ```
+
+2. **Google API Setup:**
+
+   - Go to [Google Cloud Console](https://console.cloud.google.com)
+   - Create a new project or select existing one
+   - Enable Gmail API
+   - Create OAuth2 credentials (Desktop application)
+   - Download `credentials.json` and place in project root
+
+3. **Environment Setup:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+## Usage
+
+1. **Fetch emails from Gmail:**
+
+   ```bash
+   uv run fetch-emails
+   ```
+
+2. **Process emails with rules:**
+
+   ```bash
+   uv run process-rules
+   ```
+
+3. **Run with custom rules file:**
+   ```bash
+   uv run process-rules --rules custom_rules.json
+   ```
+
+## Rule Configuration
+
+Edit `rules.json` to define your email processing rules:
+
+```json
+{
+  "rules": [
+    {
+      "name": "Mark promotional emails as read",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "noreply"
+        }
+      ],
+      "logic": "any",
+      "actions": [
+        {
+          "type": "mark_read"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Development
+
+- **Linting:** `uv run ruff check`
+- **Testing:** `uv run pytest`
+- **Format:** `uv run ruff format`
 
 ## Project Structure
 
-The project follows a modern Python project structure, which includes:
-
 ```
 gmail-automation/
-├── .gitignore
-├── .python-version
-├── README.md
-├── pyproject.toml
-├── uv.lock
-├── noxfile.py
-├── .ruff.toml
-├── src/
-│   └── gmail_automation/
-│       ├── __init__.py
-│       ├── main.py
-│       ├── config/
-│       │   ├── __init__.py
-│       │   └── settings.py
-│       ├── auth/
-│       │   ├── __init__.py
-│       │   └── gmail_auth.py
-│       ├── database/
-│       │   ├── __init__.py
-│       │   ├── models.py
-│       │   ├── connection.py
-│       │   └── migrations/
-│       ├── gmail/
-│       │   ├── __init__.py
-│       │   ├── client.py
-│       │   └── fetcher.py
-│       ├── rules/
-│       │   ├── __init__.py
-│       │   ├── engine.py
-│       │   ├── models.py
-│       │   └── actions.py
-│       ├── logging/
-│       │   ├── __init__.py
-│       │   └── config.py
-│       └── utils/
-│           ├── __init__.py
-│           └── helpers.py
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── unit/
-│   │   ├── test_auth.py
-│   │   ├── test_rules.py
-│   │   ├── test_database.py
-│   │   └── test_gmail.py
-│   ├── integration/
-│   │   ├── test_full_flow.py
-│   │   └── test_api_integration.py
-│   └── fixtures/
-│       ├── sample_emails.json
-│       └── sample_rules.json
-├── config/
-│   ├── rules.json
-│   └── logging.yaml
-├── scripts/
-│   ├── setup_db.py
-│   └── fetch_emails.py
-└── docs/
-    ├── setup.md
-    ├── configuration.md
-    └── api.md
+├── src/gmail_automation/     # Main package
+├── scripts/                  # Entry point scripts
+├── tests/                    # Unit tests
+├── rules.json               # Rule definitions
+└── credentials.json         # Google OAuth credentials
 ```
 
-## Setup Instructions
+├── tests/ # Unit tests
+├── rules.json # Rule definitions
+└── credentials.json # Google OAuth credentials
 
-1. **Clone the Repository**:
-   ```
-   git clone <repository-url>
-   cd gmail-automation
-   ```
-
-2. **Install Dependencies**:
-   Use the `uv` package manager to install the required dependencies:
-   ```
-   uv install
-   ```
-
-3. **Configure Environment Variables**:
-   Set up your environment variables for Gmail API credentials. Refer to the `docs/configuration.md` for detailed instructions.
-
-4. **Initialize the Database**:
-   Run the database setup script:
-   ```
-   python scripts/setup_db.py
-   ```
-
-5. **Run the Application**:
-   You can run the application using the command line interface:
-   ```
-   python src/gmail_automation/main.py
-   ```
-
-## Testing
-
-To run the tests, use the `nox` task runner:
-```
-nox -s test
 ```
 
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
+```

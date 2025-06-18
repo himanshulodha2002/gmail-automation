@@ -1,8 +1,9 @@
 {
   "rules": [
     {
-      "name": "Important emails from boss",
-      "predicate": "all",
+      "name": "Mark Important Emails from Boss",
+      "description": "Automatically mark emails from boss as read and move to Important folder",
+      "logic": "all",
       "conditions": [
         {
           "field": "from",
@@ -26,40 +27,60 @@
       ]
     },
     {
-      "name": "Newsletter filter",
-      "predicate": "any",
+      "name": "Archive Old Newsletters",
+      "description": "Archive newsletter emails older than 30 days",
+      "logic": "any",
       "conditions": [
         {
           "field": "from",
           "predicate": "contains",
-          "value": "newsletter@company.com"
+          "value": "newsletter"
         },
         {
-          "field": "subject",
+          "field": "from",
           "predicate": "contains",
-          "value": "weekly update"
+          "value": "noreply"
+        },
+        {
+          "field": "received_date",
+          "predicate": "less_than",
+          "value": "30",
+          "unit": "days"
+        }
+      ],
+      "actions": [
+        {
+          "type": "mark_as_read"
+        },
+        {
+          "type": "move_message",
+          "destination": "TRASH"
+        }
+      ]
+    },
+    {
+      "name": "Priority Client Emails",
+      "description": "Mark emails from priority clients as unread and add label",
+      "logic": "any",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "client1@priority.com"
+        },
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "client2@priority.com"
         }
       ],
       "actions": [
         {
           "type": "mark_as_unread"
-        }
-      ]
-    },
-    {
-      "name": "Old emails",
-      "predicate": "all",
-      "conditions": [
+        },
         {
-          "field": "received_date",
-          "predicate": "less_than",
-          "value": "30"
-        }
-      ],
-      "actions": [
-        {
-          "type": "move_message",
-          "destination": "ARCHIVE"
+          "type": "add_label",
+          "label": "Priority Clients"
         }
       ]
     }

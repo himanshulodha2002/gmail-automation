@@ -1,0 +1,58 @@
+{
+  "rules": [
+    {
+      "name": "Mark promotional emails as read",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "noreply"
+        }
+      ],
+      "logic": "any",
+      "actions": [
+        {
+          "type": "mark_read"
+        }
+      ]
+    },
+    {
+      "name": "Move old newsletters to archive",
+      "conditions": [
+        {
+          "field": "subject",
+          "predicate": "contains",
+          "value": "newsletter"
+        },
+        {
+          "field": "received_date",
+          "predicate": "less_than",
+          "value": "7 days ago"
+        }
+      ],
+      "logic": "all",
+      "actions": [
+        {
+          "type": "move_message",
+          "destination": "ARCHIVE"
+        }
+      ]
+    },
+    {
+      "name": "Mark important emails as unread",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "equals",
+          "value": "boss@company.com"
+        }
+      ],
+      "logic": "any",
+      "actions": [
+        {
+          "type": "mark_unread"
+        }
+      ]
+    }
+  ]
+}

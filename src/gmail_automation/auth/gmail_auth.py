@@ -1,45 +1,53 @@
-from __future__ import annotations
+"""Gmail OAuth2 authentication."""
 
 import os
-import pickle
-from typing import Any, Dict, Optional
+from typing import Optional
 
-import google.auth
-from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+# Gmail API scopes
+SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
 
 
 class GmailAuth:
-    def __init__(self, token_path: str = 'token.pickle', credentials_path: str = 'credentials.json'):
-        self.token_path = token_path
-        self.credentials_path = credentials_path
-        self.creds: Optional[Credentials] = None
-        self.load_credentials()
-
-    def load_credentials(self) -> None:
-        if os.path.exists(self.token_path):
-            with open(self.token_path, 'rb') as token:
-                self.creds = pickle.load(token)
-        if not self.creds or not self.creds.valid:
-            if self.creds and self.creds.expired and self.creds.refresh_token:
-                self.creds.refresh(Request())
+    """Handle Gmail OAuth2 authentication."""
+    
+    def __init__(
+        self, 
+        credentials_file: str = "credentials.json",
+        token_file: str = "token.json"
+    ):
+        self.credentials_file = credentials_file
+        self.token_file = token_file
+    
+    def get_credentials(self) -> Optional[Credentials]:
+        """Get valid Gmail API credentials."""
+        creds = None
+        
+        # Load existing token
+        if os.path.exists(self.token_file):
+            creds = Credentials.from_authorized_user_file(self.token_file, SCOPES)
+        
+        # Refresh or get new credentials
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(self.credentials_path, SCOPES)
-                self.creds = flow.run_local_server(port=0)
-            with open(self.token_path, 'wb') as token:
-                pickle.dump(self.creds, token)
-
-    def get_credentials(self) -> Credentials:
-        return self.creds
-
-    def get_user_info(self) -> Dict[str, Any]:
-        return {
-            "token": self.creds.token,
-            "expiry": self.creds.expiry,
-            "refresh_token": self.creds.refresh_token,
-            "client_id": self.creds.client_id,
-            "client_secret": self.creds.client_secret,
-        }
+                if not os.path.exists(self.credentials_file):
+                    raise FileNotFoundError(
+                        f"Credentials file not found: {self.credentials_file}"
+                    )
+                
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    self.credentials_file, SCOPES
+                )
+                creds = flow.run_local_server(port=0)
+            
+            # Save credentials for next run
+            with open(self.token_file, 'w') as token:
+                token.write(creds.to_json())
+        
+        return creds
+        return creds

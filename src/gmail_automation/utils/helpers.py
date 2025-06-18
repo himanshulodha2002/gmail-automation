@@ -1,26 +1,28 @@
-def parse_json_file(file_path: str) -> dict:
-    """Parse a JSON file and return its contents as a dictionary."""
-    import json
-    from pathlib import Path
+"""Utility functions and helpers."""
 
-    file_path = Path(file_path)
-    if not file_path.is_file():
-        raise FileNotFoundError(f"{file_path} does not exist.")
+import logging
+import os
+from typing import Optional
 
-    with file_path.open('r', encoding='utf-8') as file:
-        return json.load(file)
 
-def format_email_body(body: str) -> str:
-    """Format the email body for better readability."""
-    return body.strip().replace('\n', ' ').replace('\r', '')
+def setup_logging(level: str = "INFO") -> None:
+    """Setup logging configuration."""
+    log_level = getattr(logging, level.upper(), logging.INFO)
+    
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
-def is_valid_email(email: str) -> bool:
-    """Check if the provided string is a valid email format."""
-    import re
-    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return re.match(email_regex, email) is not None
 
-def get_current_timestamp() -> str:
-    """Return the current timestamp in ISO format."""
-    from datetime import datetime
-    return datetime.now().isoformat()
+def load_env_file(env_file: str = ".env") -> None:
+    """Load environment variables from file."""
+    if os.path.exists(env_file):
+        from dotenv import load_dotenv
+        load_dotenv(env_file)
+
+
+def get_env_var(name: str, default: Optional[str] = None) -> Optional[str]:
+    """Get environment variable with optional default."""
+    return os.getenv(name, default)

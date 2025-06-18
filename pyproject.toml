@@ -1,58 +1,38 @@
-[metadata]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "gmail-automation"
 version = "0.1.0"
-description = "A Gmail API email automation system"
-authors = ["Your Name <your.email@example.com>"]
-license = "MIT"
-
-[tool.uv]
+description = "Gmail automation with rule-based email processing"
+readme = "README.md"
+requires-python = ">=3.9"
 dependencies = [
-    "google-auth",
-    "google-auth-oauthlib",
-    "google-api-python-client",
-    "sqlalchemy",
-    "asyncpg",  # For PostgreSQL
-    "aiomysql",  # For MySQL
-    "aiosqlite",  # For SQLite
-    "pydantic",
-    "pytest",
-    "pytest-asyncio",
-    "nox",
-    "ruff",
-    "mypy",
+    "google-auth>=2.23.0",
+    "google-auth-oauthlib>=1.1.0",
+    "google-api-python-client>=2.100.0",
+    "sqlalchemy>=2.0.0",
+    "pydantic>=2.4.0",
+    "python-dotenv>=1.0.0",
 ]
 
-[build-system]
-requires = ["uv"]
-build-backend = "uv"
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.0",
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
 
 [tool.ruff]
 line-length = 88
-exclude = ["tests/*", "docs/*"]
+target-version = "py39"
+select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20"]
+ignore = ["S101"]  # Allow assert in tests
 
-[tool.mypy]
-files = "src/gmail_automation"
-ignore_missing_imports = true
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]
 
-[tool.nox]
-sessions = ["lint", "type-check", "test", "test-integration", "docs"]
-
-[nox.sessions.lint]
-# Run ruff format + ruff check
-commands = ["ruff check src tests"]
-
-[nox.sessions.type-check]
-# Run mypy
-commands = ["mypy src"]
-
-[nox.sessions.test]
-# Run pytest with coverage
-commands = ["pytest --cov=src"]
-
-[nox.sessions.test-integration]
-# Run integration tests separately
-commands = ["pytest tests/integration"]
-
-[nox.sessions.docs]
-# Generate documentation
-commands = ["sphinx-build -b html docs docs/_build"]
+[project.scripts]
+fetch-emails = "gmail_automation.scripts.fetch_emails:main"
+process-rules = "gmail_automation.scripts.process_rules:main"

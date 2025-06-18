@@ -1,31 +1,42 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+"""Database models for email storage."""
 
-Base = declarative_base()
+from datetime import datetime
+from typing import Optional
+
+from sqlalchemy import DateTime, String, Text, Boolean
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+
+class Base(DeclarativeBase):
+    """Base class for all database models."""
+    pass
+
 
 class Email(Base):
-    __tablename__ = 'emails'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    message_id = Column(String, unique=True, nullable=False)
-    thread_id = Column(String, nullable=False)
-    subject = Column(String, nullable=False)
-    sender = Column(String, nullable=False)
-    recipients = Column(Text, nullable=False)
-    body = Column(Text, nullable=False)
-    received_date = Column(DateTime, default=datetime.utcnow)
-    labels = Column(Text)  # Store labels as a comma-separated string
-    read_status = Column(Boolean, default=False)
-
-class RuleExecution(Base):
-    __tablename__ = 'rule_executions'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    email_id = Column(Integer, ForeignKey('emails.id'), nullable=False)
-    executed_at = Column(DateTime, default=datetime.utcnow)
-
-    email = relationship("Email", back_populates="rule_executions")
-
-Email.rule_executions = relationship("RuleExecution", order_by=RuleExecution.id, back_populates="email")
+    """Email model for storing Gmail messages."""
+    
+    __tablename__ = "emails"
+    
+    id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    thread_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    from_address: Mapped[str] = mapped_column(String(255), nullable=False)
+    to_address: Mapped[Optional[str]] = mapped_column(String(255))
+    subject: Mapped[Optional[str]] = mapped_column(String(500))
+    message: Mapped[Optional[str]] = mapped_column(Text)
+    received_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False)
+    labels: Mapped[Optional[str]] = mapped_column(String(500))  # JSON string
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, 
+        default=datetime.utcnow,
+        nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, 
+        default=datetime.utcnow, 
+        onupdate=datetime.utcnow,
+        nullable=False
+    )
+    
+    def __repr__(self) -> str:
+        return f"<Email(id='{self.id}', subject='{self.subject}')>"
