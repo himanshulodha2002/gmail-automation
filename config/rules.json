@@ -1,0 +1,67 @@
+{
+  "rules": [
+    {
+      "name": "Important emails from boss",
+      "predicate": "all",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "boss@company.com"
+        },
+        {
+          "field": "subject",
+          "predicate": "contains",
+          "value": "urgent"
+        }
+      ],
+      "actions": [
+        {
+          "type": "mark_as_read"
+        },
+        {
+          "type": "move_message",
+          "destination": "IMPORTANT"
+        }
+      ]
+    },
+    {
+      "name": "Newsletter filter",
+      "predicate": "any",
+      "conditions": [
+        {
+          "field": "from",
+          "predicate": "contains",
+          "value": "newsletter@company.com"
+        },
+        {
+          "field": "subject",
+          "predicate": "contains",
+          "value": "weekly update"
+        }
+      ],
+      "actions": [
+        {
+          "type": "mark_as_unread"
+        }
+      ]
+    },
+    {
+      "name": "Old emails",
+      "predicate": "all",
+      "conditions": [
+        {
+          "field": "received_date",
+          "predicate": "less_than",
+          "value": "30"
+        }
+      ],
+      "actions": [
+        {
+          "type": "move_message",
+          "destination": "ARCHIVE"
+        }
+      ]
+    }
+  ]
+}

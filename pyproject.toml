@@ -1,0 +1,58 @@
+[metadata]
+name = "gmail-automation"
+version = "0.1.0"
+description = "A Gmail API email automation system"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+
+[tool.uv]
+dependencies = [
+    "google-auth",
+    "google-auth-oauthlib",
+    "google-api-python-client",
+    "sqlalchemy",
+    "asyncpg",  # For PostgreSQL
+    "aiomysql",  # For MySQL
+    "aiosqlite",  # For SQLite
+    "pydantic",
+    "pytest",
+    "pytest-asyncio",
+    "nox",
+    "ruff",
+    "mypy",
+]
+
+[build-system]
+requires = ["uv"]
+build-backend = "uv"
+
+[tool.ruff]
+line-length = 88
+exclude = ["tests/*", "docs/*"]
+
+[tool.mypy]
+files = "src/gmail_automation"
+ignore_missing_imports = true
+
+[tool.nox]
+sessions = ["lint", "type-check", "test", "test-integration", "docs"]
+
+[nox.sessions.lint]
+# Run ruff format + ruff check
+commands = ["ruff check src tests"]
+
+[nox.sessions.type-check]
+# Run mypy
+commands = ["mypy src"]
+
+[nox.sessions.test]
+# Run pytest with coverage
+commands = ["pytest --cov=src"]
+
+[nox.sessions.test-integration]
+# Run integration tests separately
+commands = ["pytest tests/integration"]
+
+[nox.sessions.docs]
+# Generate documentation
+commands = ["sphinx-build -b html docs docs/_build"]
