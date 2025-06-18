@@ -1,8 +1,10 @@
 import pytest
-from gmail_automation.gmail.client import GmailClient
+
 from gmail_automation.auth.gmail_auth import authenticate
 from gmail_automation.database.connection import get_db_session
+from gmail_automation.database.models import Email
 from gmail_automation.rules.engine import RuleEngine
+
 
 @pytest.fixture
 def gmail_client():
@@ -41,7 +43,7 @@ def test_rule_engine_processing(rule_engine, db_session):
     sample_rules = [
         {
             "name": "Test Rule",
-            "predicate": "all",
+            "logic": "all",
             "conditions": [
                 {"field": "from", "predicate": "contains", "value": "test@example.com"}
             ],
@@ -50,20 +52,16 @@ def test_rule_engine_processing(rule_engine, db_session):
             ]
         }
     ]
-    
     rule_engine.load_rules(sample_rules)
-    
-    # Simulate fetching emails and processing them
-    emails = db_session.query(Email).all()  # Assuming Email is your SQLAlchemy model
+    emails = db_session.query(Email).all()
     for email in emails:
         rule_engine.evaluate(email)
-
-    # Add assertions based on expected outcomes of rule processing
-    assert all(email.read_status for email in emails if email.sender == "test@example.com")  # Example assertion
+    assert all(email.read_status for email in emails if email.sender == "test@example.com")
 
 def test_api_integration(gmail_client):
     """Test the integration with the Gmail API."""
     response = gmail_client.get_user_profile()
     assert response is not None
     assert 'emailAddress' in response
-    assert response['emailAddress'] == 'your_email@example.com'  # Replace with actual email for testing
+    # Optionally, check for a valid email address format
+    assert '@' in response['emailAddress']

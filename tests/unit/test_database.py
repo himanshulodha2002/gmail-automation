@@ -1,8 +1,9 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from gmail_automation.database.connection import get_db_session
-from gmail_automation.database.models import Email, RuleExecution
+
+from gmail_automation.database.models import Email, RuleExecution, Base
+
 
 @pytest.fixture(scope='module')
 def test_db():
@@ -12,12 +13,12 @@ def test_db():
     session = Session()
 
     # Create all tables
-    Email.metadata.create_all(engine)
-    RuleExecution.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
 
     yield session  # This will be the session used in tests
 
     session.close()  # Cleanup after tests
+
 
 def test_email_model(test_db):
     email = Email(
@@ -37,6 +38,7 @@ def test_email_model(test_db):
     assert email.id is not None
     assert email.subject == 'Test Subject'
     assert email.sender == 'test@example.com'
+
 
 def test_rule_execution_model(test_db):
     rule_execution = RuleExecution(

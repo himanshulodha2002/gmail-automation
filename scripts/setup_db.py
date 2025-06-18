@@ -1,5 +1,7 @@
 import sys
+
 from sqlalchemy import create_engine
+
 from gmail_automation.database.models import Base
 
 
@@ -7,6 +9,7 @@ def setup_database(db_url: str):
     engine = create_engine(db_url)
     Base.metadata.create_all(engine)
     print("Database setup complete.")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

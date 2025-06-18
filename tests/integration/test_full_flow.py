@@ -1,10 +1,12 @@
 import pytest
+
 from gmail_automation.auth.gmail_auth import authenticate
-from gmail_automation.gmail.fetcher import fetch_emails
 from gmail_automation.database.connection import get_db_session
+from gmail_automation.database.models import Email
+from gmail_automation.gmail.fetcher import fetch_emails
 from gmail_automation.rules.engine import evaluate_rules
 from gmail_automation.rules.models import Rule
-from gmail_automation.database.models import Email
+
 
 @pytest.fixture
 def db_session():
@@ -55,7 +57,7 @@ def test_full_workflow(authenticated_user, db_session, sample_emails):
 
     # Define sample rules
     rules = [
-        Rule(name="Test Rule", predicate="all", conditions=[
+        Rule(name="Test Rule", logic="all", conditions=[
             {"field": "from", "predicate": "contains", "value": "test1@example.com"}
         ], actions=[
             {"type": "mark_as_read"}

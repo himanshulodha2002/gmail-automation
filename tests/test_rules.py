@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 import pytest
 
-from gmail_automation.rules.engine import RuleEngine, Rule, Condition, Action
 from gmail_automation.database.models import Email
+from gmail_automation.rules.engine import Action, Condition, Rule, RuleEngine
 
 
 class TestRuleEngine:

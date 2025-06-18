@@ -5,53 +5,35 @@
 Before you begin, ensure you have the following installed on your machine:
 
 - Python 3.8 or higher
-- PostgreSQL, MySQL, or SQLite3 (depending on your choice of database)
-- pip (Python package installer)
-- uv (modern Python package manager)
+- SQLite3 (default, no setup needed)
+- [uv](https://github.com/astral-sh/uv) (modern Python package manager)
 
 ## Installation Steps
 
 1. **Clone the Repository**
 
-   Clone the project repository from GitHub:
-
-   ```
+   ```bash
    git clone https://github.com/yourusername/gmail-automation.git
    cd gmail-automation
    ```
 
-2. **Set Up Python Environment**
+2. **Install `uv`**
 
-   Create a virtual environment and activate it:
+   ```bash
+   # On macOS & Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
 
-   ```
-   uv create .python-version
-   uv install
-   ```
-
-3. **Install Dependencies**
-
-   Install the required dependencies using uv:
-
-   ```
-   uv install
+   # On Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 
-   This will install all the necessary packages as specified in `pyproject.toml`.
+3. **Create Virtual Environment and Install Dependencies**
 
-4. **Configure Database**
-
-   Update the database configuration in `src/gmail_automation/config/settings.py` to match your database setup. Ensure that the database server is running and accessible.
-
-5. **Run Database Migrations**
-
-   Initialize the database schema by running the Alembic migrations:
-
-   ```
-   python -m alembic upgrade head
+   ```bash
+   make install
    ```
 
-6. **Set Up Google API Credentials**
+4. **Set Up Google API Credentials**
 
    - Go to the Google Cloud Console.
    - Create a new project or select an existing one.
@@ -59,26 +41,32 @@ Before you begin, ensure you have the following installed on your machine:
    - Create OAuth 2.0 credentials and download the `credentials.json` file.
    - Place the `credentials.json` file in the root of the project directory.
 
-7. **Run the Application**
+5. **Configure Environment Variables**
 
-   You can now run the application using the following command:
-
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
-   python -m src.gmail_automation.main
+
+6. **Initialize the Database**
+
+   ```bash
+   make setup-db
    ```
 
-   Follow the prompts to authenticate with your Google account and start fetching emails.
+7. **Fetch Emails**
 
-## Testing
+   ```bash
+   make fetch
+   ```
 
-To run the tests, use the following command:
+8. **Process Emails with Rules**
 
-```
-nox -s test
-```
-
-This will execute all unit and integration tests to ensure everything is functioning correctly.
+   ```bash
+   make process-rules
+   ```
 
 ## Additional Information
 
-For more details on configuration options, refer to `docs/configuration.md`. For API integration specifics, check `docs/api.md`.
+- The SQLite database is stored in the `data/` directory and is gitignored.
+- For more configuration options, see `docs/configuration.md`.

@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.gmail_automation.database.connection import get_db_session
+
 
 @pytest.fixture(scope='session')
 def db_engine():

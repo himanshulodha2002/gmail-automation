@@ -1,12 +1,14 @@
 import pytest
+
 from gmail_automation.rules.engine import RuleEngine
 from gmail_automation.rules.models import Rule
+
 
 @pytest.fixture
 def sample_rule():
     return Rule(
         name="Test Rule",
-        predicate="all",
+        logic="all",
         conditions=[
             {"field": "from", "predicate": "contains", "value": "test@example.com"},
             {"field": "subject", "predicate": "equals", "value": "Test Subject"}
@@ -56,7 +58,7 @@ def test_rule_evaluation_no_conditions_met(sample_rule):
 def test_rule_evaluation_with_or_logic():
     rule = Rule(
         name="Test OR Rule",
-        predicate="any",
+        logic="any",
         conditions=[
             {"field": "from", "predicate": "contains", "value": "test@example.com"},
             {"field": "subject", "predicate": "equals", "value": "Another Subject"}

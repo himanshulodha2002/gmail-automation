@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build, Resource
+from googleapiclient.discovery import Resource, build
 from googleapiclient.errors import HttpError
 
 from ..database.models import Email
@@ -42,8 +42,12 @@ class GmailClient:
         """Gets a label ID by its name from the cache."""
         return self._label_cache.get(label_name)
 
-    def list_messages(self, query: str = "is:unread", max_results: int = 100) -> List[Dict[str, Any]]:
-        """Lists basic message info (like IDs) from the user's inbox based on a query."""
+    def list_messages(
+        self, query: str = "is:unread", max_results: int = 100
+    ) -> List[Dict[str, Any]]:
+        """
+        Lists basic message info (like IDs) from the user's inbox based on a query.
+        """
         try:
             logger.info(f"Fetching message list with query: '{query}'")
             results = (
@@ -61,7 +65,9 @@ class GmailClient:
             return []
 
     def get_message_details(self, message_id: str) -> Optional[Email]:
-        """Gets the full details for a single message and converts it to an Email object."""
+        """
+        Gets the full details for a single message and converts it to an Email object.
+        """
         try:
             message = (
                 self.service.users()
@@ -71,7 +77,10 @@ class GmailClient:
             )
             return self._parse_message_to_email(message)
         except HttpError as error:
-            logger.error(f"An error occurred fetching details for message ID {message_id}: {error}")
+            logger.error(
+                f"An error occurred fetching details for message ID "
+                f"{message_id}: {error}"
+            )
             return None
 
     def _parse_message_to_email(self, message: Dict[str, Any]) -> Email:
@@ -81,7 +90,7 @@ class GmailClient:
 
         received_timestamp_ms = int(message["internalDate"])
         received_at = datetime.fromtimestamp(received_timestamp_ms / 1000.0)
-        
+
         label_ids = message.get("labelIds", [])
 
         return Email(
@@ -94,21 +103,25 @@ class GmailClient:
             received_at=received_at,
             body=self._extract_message_body(message["payload"]),
             is_read="UNREAD" not in label_ids,
-            labels=json.dumps(label_ids)
+            labels=json.dumps(label_ids),
         )
 
     def _extract_message_body(self, payload: Dict[str, Any]) -> str:
         """Finds and decodes the text/plain part of an email's body."""
         if payload.get("body", {}).get("data"):
             data = payload["body"]["data"]
-            return base64.urlsafe_b64decode(data.encode("ASCII")).decode("utf-8", "ignore")
+            return base64.urlsafe_b64decode(data.encode("ASCII")).decode(
+                "utf-8", "ignore"
+            )
 
         if "parts" in payload:
             for part in payload["parts"]:
                 if part["mimeType"] == "text/plain":
                     if part.get("body", {}).get("data"):
                         data = part["body"]["data"]
-                        return base64.urlsafe_b64decode(data.encode("ASCII")).decode("utf-8", "ignore")
+                        return base64.urlsafe_b64decode(data.encode("ASCII")).decode(
+                            "utf-8", "ignore"
+                        )
                 elif "parts" in part:
                     body = self._extract_message_body(part)
                     if body:
@@ -143,7 +156,9 @@ class GmailClient:
         add_labels = [destination_label_id]
         remove_labels = [inbox_label_id] if inbox_label_id else []
 
-        return self._modify_labels(message_id, add_labels=add_labels, remove_labels=remove_labels)
+        return self._modify_labels(
+            message_id, add_labels=add_labels, remove_labels=remove_labels
+        )
 
     def _modify_labels(
         self,

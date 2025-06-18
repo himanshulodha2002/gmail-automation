@@ -2,26 +2,35 @@
 
 import argparse
 import logging
-import sys
 import os
+import sys
 
 # Add the src directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
+from gmail_automation.auth.gmail_auth import GmailAuth
 from gmail_automation.database.connection import Database, get_db_url
 from gmail_automation.database.models import Email
 from gmail_automation.gmail.client import GmailClient
-from gmail_automation.auth.gmail_auth import GmailAuth
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 def main():
     """Main function to fetch emails."""
     parser = argparse.ArgumentParser(description="Fetch emails from Gmail.")
-    parser.add_argument("--query", type=str, default="is:unread", help="Gmail search query.")
-    parser.add_argument("--max-results", type=int, default=100, help="Maximum number of emails to fetch.")
+    parser.add_argument(
+        "--query", type=str, default="is:unread", help="Gmail search query."
+    )
+    parser.add_argument(
+        "--max-results",
+        type=int,
+        default=100,
+        help="Maximum number of emails to fetch.",
+    )
     args = parser.parse_args()
 
     logger.info("Starting email fetch process")
@@ -39,7 +48,9 @@ def main():
         database.create_tables()
 
         # 1. Get the list of message IDs
-        message_list = gmail_client.list_messages(query=args.query, max_results=args.max_results)
+        message_list = gmail_client.list_messages(
+            query=args.query, max_results=args.max_results
+        )
 
         if not message_list:
             logger.info("No new messages to process.")
@@ -55,7 +66,9 @@ def main():
                 # Check if email already exists in the database
                 exists = session.query(Email).filter_by(id=message_id).first()
                 if exists:
-                    logger.debug(f"Skipping already existing email with ID: {message_id}")
+                    logger.debug(
+                        f"Skipping already existing email with ID: {message_id}"
+                    )
                     continue
 
                 # 2. Get the full details for each new message
@@ -66,12 +79,16 @@ def main():
                     saved_count += 1
 
             if saved_count > 0:
-                logger.info(f"Successfully fetched and stored {saved_count} new emails.")
+                logger.info(
+                    f"Successfully fetched and stored {saved_count} new emails."
+                )
             else:
                 logger.info("No new emails were stored (all were duplicates).")
 
     except Exception as e:
-        logger.error(f"An error occurred during the email fetch process: {e}", exc_info=True)
+        logger.error(
+            f"An error occurred during the email fetch process: {e}", exc_info=True
+        )
         sys.exit(1)
 
 

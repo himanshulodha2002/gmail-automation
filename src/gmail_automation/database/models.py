@@ -2,22 +2,23 @@
 
 import json
 from datetime import datetime
-from typing import Optional, List
+from typing import List, Optional
 
-from sqlalchemy import DateTime, String, Text, Boolean
+from sqlalchemy import Boolean, DateTime, String, Text
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
     """Base class for all database models."""
+
     pass
 
 
 class Email(Base):
     """Email model for storing Gmail messages."""
-    
+
     __tablename__ = "emails"
-    
+
     id: Mapped[str] = mapped_column(String(50), primary_key=True)
     thread_id: Mapped[str] = mapped_column(String(50), nullable=False)
     message_id: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
@@ -30,17 +31,12 @@ class Email(Base):
     labels: Mapped[Optional[str]] = mapped_column(Text)  # Storing as a JSON string
 
     created_at: Mapped[datetime] = mapped_column(
-        DateTime, 
-        default=datetime.utcnow,
-        nullable=False
+        DateTime, default=datetime.utcnow, nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, 
-        default=datetime.utcnow, 
-        onupdate=datetime.utcnow,
-        nullable=False
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
     )
-    
+
     def __repr__(self) -> str:
         return f"<Email(id='{self.id}', subject='{self.subject}')>"
 

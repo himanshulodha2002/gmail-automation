@@ -17,20 +17,18 @@ def get_db_url() -> str:
 
 class Database:
     """Database connection manager."""
-    
+
     def __init__(self, database_url: str):
         self.database_url = database_url
         self.engine = create_engine(database_url, echo=False)
         self.SessionLocal = sessionmaker(
-            autocommit=False, 
-            autoflush=False, 
-            bind=self.engine
+            autocommit=False, autoflush=False, bind=self.engine
         )
-        
+
     def create_tables(self) -> None:
         """Create all database tables."""
         Base.metadata.create_all(bind=self.engine)
-    
+
     @contextmanager
     def get_session(self) -> Generator[Session, None, None]:
         """Get database session with automatic cleanup."""

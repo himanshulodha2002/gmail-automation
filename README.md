@@ -6,7 +6,7 @@ A clean and modern Python project that connects to the Gmail API and processes e
 
 - 🔐 OAuth2 authentication with Gmail API
 - 📧 Fetch emails using Gmail REST API
-- 💾 Store emails in SQLite database
+- 💾 Store emails in SQLite database (in `data/`)
 - 📋 Rule-based email processing with JSON configuration
 - 🎯 Actions: mark as read/unread, move messages
 
@@ -32,24 +32,27 @@ A clean and modern Python project that connects to the Gmail API and processes e
 3.  **Create virtual environment and install dependencies:**
 
     ```bash
-    uv venv
-    source .venv/bin/activate  # On Windows, use `.venv\Scripts\activate`
-    uv sync
+    make install
     ```
 
 4.  **Set up Google Cloud project and OAuth 2.0:**
 
     - Go to the [Google Cloud Console](https://console.cloud.google.com/).
     - Create a new project or select an existing one.
-    - Click on enable API and Services.
     - Enable the Gmail API.
     - Create OAuth 2.0 credentials (Desktop app).
     - Download `credentials.json` and place it in the project root.
 
 5.  **Environment Setup:**
+
     ```bash
     cp .env.example .env
     # Edit .env with your configuration
+    ```
+
+6.  **Initialize the database:**
+    ```bash
+    make setup-db
     ```
 
 ## Usage
@@ -57,18 +60,18 @@ A clean and modern Python project that connects to the Gmail API and processes e
 1. **Fetch emails from Gmail:**
 
    ```bash
-   uv run fetch-emails
+   make fetch
    ```
 
 2. **Process emails with rules:**
 
    ```bash
-   uv run process-rules
+   make process-rules
    ```
 
 3. **Run with custom rules file:**
    ```bash
-   uv run process-rules --rules custom_rules.json
+   uv run env PYTHONPATH=src python scripts/process_rules.py --rules custom_rules.json
    ```
 
 ## Rule Configuration
@@ -100,9 +103,10 @@ Edit `rules.json` to define your email processing rules:
 
 ## Development
 
-- **Linting:** `uv run ruff check`
-- **Testing:** `uv run pytest`
-- **Format:** `uv run ruff format`
+- **Linting:** `make lint`
+- **Testing:** `make test`
+- **Format:** `make format`
+- **Type checking:** `make type-check`
 
 ## Project Structure
 
@@ -110,15 +114,15 @@ Edit `rules.json` to define your email processing rules:
 gmail-automation/
 ├── src/gmail_automation/     # Main package
 ├── scripts/                  # Entry point scripts
+├── data/                     # SQLite database (gitignored)
 ├── tests/                    # Unit tests
-├── rules.json               # Rule definitions
-└── credentials.json         # Google OAuth credentials
+├── rules.json                # Rule definitions
+├── credentials.json          # Google OAuth credentials
+├── Makefile
+└── README.md
 ```
 
-├── tests/ # Unit tests
-├── rules.json # Rule definitions
-└── credentials.json # Google OAuth credentials
+## Notes
 
-```
-
-```
+- The SQLite database is stored in the `data/` directory and is gitignored.
+- For more details, see `docs/setup.md` and `docs/configuration.md`.
