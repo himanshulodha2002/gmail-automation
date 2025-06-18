@@ -76,7 +76,7 @@ A clean and modern Python project that connects to the Gmail API and processes e
 
 ## Rule Configuration
 
-Edit `rules.json` to define your email processing rules:
+Edit `config/rules.json` to define your email processing rules:
 
 ```json
 {

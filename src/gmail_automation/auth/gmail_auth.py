@@ -15,7 +15,9 @@ class GmailAuth:
     """Handle Gmail OAuth2 authentication."""
 
     def __init__(
-        self, credentials_file: str = "credentials.json", token_file: str = "token.json"
+        self,
+        credentials_file: str = "credentials.json",
+        token_file: str = "config/token.json",
     ):
         self.credentials_file = credentials_file
         self.token_file = token_file

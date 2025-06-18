@@ -23,7 +23,9 @@ def main():
     """Main function to process emails with rules."""
     parser = argparse.ArgumentParser(description="Process emails with rules")
     parser.add_argument(
-        "--rules", default="rules.json", help="Rules file path (default: rules.json)"
+        "--rules",
+        default="config/rules.json",
+        help="Rules file path (default: config/rules.json)",
     )
     parser.add_argument(
         "--dry-run",

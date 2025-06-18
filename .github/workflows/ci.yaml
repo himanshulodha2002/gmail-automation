@@ -7,151 +7,90 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: "latest"
-
-      - name: Set up Python ${{ matrix.python-version }}
-        run: uv python install ${{ matrix.python-version }}
-
-      - name: Sync dependencies
-        run: uv sync --locked --all-extras
-
-      - name: Run unit tests
-        run: uvx nox -s test
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        if: matrix.python-version == '3.11'
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: true
-
-  test-integration:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
-        with:
-          version: "latest"
-
-      - name: Set up Python
-        run: uv python install
-
-      - name: Sync dependencies
-        run: uv sync --locked --all-extras
-
-      - name: Run integration tests
-        run: uvx nox -s test_integration
-
   lint:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s lint
 
-      - name: Set up Python
-        run: uv python install
-
-      - name: Sync dependencies
-        run: uv sync --locked --all-extras
-
-      - name: Run linting
-        run: uvx nox -s lint
-
-  type-check:
+  format:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s format
 
-      - name: Set up Python
-        run: uv python install
-
-      - name: Sync dependencies
-        run: uv sync --locked --all-extras
-
-      - name: Run type checking
-        run: uvx nox -s type_check
-
-  security:
+  type_check:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s type_check
 
-      - name: Set up Python
-        run: uv python install
-
-      - name: Sync dependencies
-        run: uv sync --locked --all-extras
-
-      - name: Run security checks
-        run: uvx nox -s security
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: security-report
-          path: bandit-report.json
-
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
           version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s test
 
-      - name: Set up Python
-        run: uv python install
-
-      - name: Sync dependencies
-        run: uv sync --all-extras
-
-      - name: Build package
-        run: uv build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+  test_integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
-          name: dist
-          path: dist/
+          version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s test_integration
+
+  test_all:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s test_all
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s docs
+
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+      - run: uv python install
+      - run: uv sync --locked --all-extras
+      - run: uvx nox -s safety

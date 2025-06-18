@@ -69,4 +69,5 @@ Before you begin, ensure you have the following installed on your machine:
 ## Additional Information
 
 - The SQLite database is stored in the `data/` directory and is gitignored.
+- The rules file is located at `config/rules.json`.
 - For more configuration options, see `docs/configuration.md`.

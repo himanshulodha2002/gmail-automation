@@ -3,7 +3,7 @@
 import json
 import logging
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -39,7 +39,7 @@ class Rule(BaseModel):
 class RuleEngine:
     """Engine for processing email rules."""
 
-    def __init__(self, rules_file: str = "rules.json"):
+    def __init__(self, rules_file: str = "config/rules.json"):
         self.rules = self._load_rules(rules_file)
 
     def _load_rules(self, rules_file: str) -> List[Rule]:
@@ -142,7 +142,7 @@ class RuleEngine:
 
         return False
 
-    def _parse_relative_date(self, date_expr: str) -> datetime:
+    def _parse_relative_date(self, date_expr: str) -> Optional[datetime]:
         """Parse relative date expressions like '7 days ago'."""
         try:
             parts = date_expr.lower().split()

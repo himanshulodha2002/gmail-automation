@@ -12,7 +12,7 @@ from .models import Base
 
 def get_db_url() -> str:
     """Get database URL from environment or use a default."""
-    return os.getenv("DATABASE_URL", "sqlite:///gmail_automation.db")
+    return os.getenv("DATABASE_URL", "sqlite:///./data/gmail_automation.db")
 
 
 class Database:

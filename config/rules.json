@@ -1,86 +1,56 @@
 {
   "rules": [
     {
-      "name": "Mark Important Emails from Boss",
-      "description": "Automatically mark emails from boss as read and move to Important folder",
-      "logic": "all",
+      "name": "Mark promotional emails as read",
       "conditions": [
-        {
-          "field": "from",
-          "predicate": "contains",
-          "value": "boss@company.com"
-        },
-        {
-          "field": "subject",
-          "predicate": "contains",
-          "value": "urgent"
-        }
-      ],
-      "actions": [
-        {
-          "type": "mark_as_read"
-        },
-        {
-          "type": "move_message",
-          "destination": "IMPORTANT"
-        }
-      ]
-    },
-    {
-      "name": "Archive Old Newsletters",
-      "description": "Archive newsletter emails older than 30 days",
-      "logic": "any",
-      "conditions": [
-        {
-          "field": "from",
-          "predicate": "contains",
-          "value": "newsletter"
-        },
         {
           "field": "from",
           "predicate": "contains",
           "value": "noreply"
-        },
-        {
-          "field": "received_date",
-          "predicate": "less_than",
-          "value": "30",
-          "unit": "days"
         }
       ],
+      "logic": "any",
       "actions": [
         {
-          "type": "mark_as_read"
-        },
-        {
-          "type": "move_message",
-          "destination": "TRASH"
+          "type": "mark_read"
         }
       ]
     },
     {
-      "name": "Priority Client Emails",
-      "description": "Mark emails from priority clients as unread and add label",
-      "logic": "any",
+      "name": "Move old newsletters to archive",
+      "conditions": [
+        {
+          "field": "subject",
+          "predicate": "contains",
+          "value": "newsletter"
+        },
+        {
+          "field": "received_date",
+          "predicate": "less_than",
+          "value": "7 days ago"
+        }
+      ],
+      "logic": "all",
+      "actions": [
+        {
+          "type": "move_message",
+          "destination": "ARCHIVE"
+        }
+      ]
+    },
+    {
+      "name": "Mark important emails as unread",
       "conditions": [
         {
           "field": "from",
-          "predicate": "contains",
-          "value": "client1@priority.com"
-        },
-        {
-          "field": "from",
-          "predicate": "contains",
-          "value": "client2@priority.com"
+          "predicate": "equals",
+          "value": "boss@company.com"
         }
       ],
+      "logic": "any",
       "actions": [
         {
-          "type": "mark_as_unread"
-        },
-        {
-          "type": "add_label",
-          "label": "Priority Clients"
+          "type": "mark_unread"
         }
       ]
     }
