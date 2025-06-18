@@ -1,4 +1,15 @@
-"""Script to fetch emails from Gmail and store in database."""
+"""Script to fetch emails from Gmail and store them in the database.
+
+This script authenticates with the Gmail API, fetches emails matching a given query,
+and stores new emails in the local database. Duplicate emails are skipped.
+
+Usage:
+    python fetch_emails.py --query "is:unread" --max-results 100
+
+Arguments:
+    --query: Gmail search query (default: "is:unread")
+    --max-results: Maximum number of emails to fetch (default: 100)
+"""
 
 import argparse
 import logging
@@ -20,7 +31,16 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    """Main function to fetch emails."""
+    """
+    Fetch emails from Gmail and store them in the database.
+
+    - Authenticates with Gmail using OAuth2 credentials.
+    - Fetches emails matching the provided query and up to the specified max results.
+    - Skips emails already present in the database.
+    - Stores new emails in the database.
+
+    Exits with code 1 on error or if credentials are missing.
+    """
     parser = argparse.ArgumentParser(description="Fetch emails from Gmail.")
     parser.add_argument(
         "--query", type=str, default="is:unread", help="Gmail search query."

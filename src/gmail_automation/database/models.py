@@ -38,10 +38,21 @@ class Email(Base):
     )
 
     def __repr__(self) -> str:
+        """
+        String representation of the Email object.
+
+        Returns:
+            str: Readable representation with id and subject.
+        """
         return f"<Email(id='{self.id}', subject='{self.subject}')>"
 
     def get_labels(self) -> List[str]:
-        """Returns the labels from the JSON string."""
+        """
+        Returns the labels from the JSON string.
+
+        Returns:
+            List[str]: List of label names or IDs.
+        """
         if self.labels:
             return json.loads(self.labels)
         return []

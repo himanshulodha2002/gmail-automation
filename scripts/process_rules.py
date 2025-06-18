@@ -1,4 +1,17 @@
-"""Script to process stored emails with rules."""
+"""Script to process stored emails with rules.
+
+This script loads emails from the database, evaluates them against a set of rules
+defined in a JSON file, and executes actions (such as marking as read or moving messages)
+using the Gmail API.
+
+Usage:
+    python process_rules.py --rules config/rules.json --dry-run
+
+Arguments:
+    --rules: Path to the rules JSON file (default: config/rules.json)
+    --dry-run: If set, actions will not be executed, only logged.
+    --log-level: Logging verbosity (DEBUG, INFO, WARNING, ERROR)
+"""
 
 import argparse
 import logging
@@ -20,7 +33,17 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    """Main function to process emails with rules."""
+    """
+    Main function to process emails with rules.
+
+    - Loads environment variables and sets up logging.
+    - Authenticates with Gmail and initializes the database.
+    - Loads rules from the specified JSON file.
+    - For each email in the database:
+        - Evaluates the email against all rules.
+        - If any actions are triggered, either logs them (dry run) or executes them.
+    - Logs a summary of processed emails and actions.
+    """
     parser = argparse.ArgumentParser(description="Process emails with rules")
     parser.add_argument(
         "--rules",

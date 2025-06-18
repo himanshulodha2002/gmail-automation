@@ -19,17 +19,34 @@ class GmailClient:
     """A client to interact with the Gmail API."""
 
     def __init__(self, credentials: Credentials):
-        """Initializes the Gmail client and authenticates."""
+        """
+        Initializes the Gmail client and authenticates.
+
+        Args:
+            credentials (Credentials): Google OAuth2 credentials.
+        """
         self.service = self._authenticate(credentials)
         self._label_cache: Dict[str, str] = {}
         self._populate_label_cache()
 
     def _authenticate(self, credentials: Credentials) -> Resource:
-        """Authenticates the client using the provided credentials."""
+        """
+        Authenticates the client using the provided credentials.
+
+        Args:
+            credentials (Credentials): Google OAuth2 credentials.
+
+        Returns:
+            Resource: Gmail API service resource.
+        """
         return build("gmail", "v1", credentials=credentials)
 
     def _populate_label_cache(self):
-        """Fetches all user labels and caches their names and IDs."""
+        """
+        Fetches all user labels and caches their names and IDs.
+
+        Populates the internal label cache for quick lookup.
+        """
         try:
             results = self.service.users().labels().list(userId="me").execute()
             labels = results.get("labels", [])
@@ -39,7 +56,15 @@ class GmailClient:
             logger.error(f"An error occurred fetching labels: {error}")
 
     def get_label_id_by_name(self, label_name: str) -> Optional[str]:
-        """Gets a label ID by its name from the cache."""
+        """
+        Gets a label ID by its name from the cache.
+
+        Args:
+            label_name (str): The name of the label.
+
+        Returns:
+            Optional[str]: The label ID if found, else None.
+        """
         return self._label_cache.get(label_name)
 
     def list_messages(
@@ -47,6 +72,13 @@ class GmailClient:
     ) -> List[Dict[str, Any]]:
         """
         Lists basic message info (like IDs) from the user's inbox based on a query.
+
+        Args:
+            query (str): Gmail search query string.
+            max_results (int): Maximum number of messages to return.
+
+        Returns:
+            List[Dict[str, Any]]: List of message metadata dictionaries.
         """
         try:
             logger.info(f"Fetching message list with query: '{query}'")
@@ -67,6 +99,12 @@ class GmailClient:
     def get_message_details(self, message_id: str) -> Optional[Email]:
         """
         Gets the full details for a single message and converts it to an Email object.
+
+        Args:
+            message_id (str): The Gmail message ID.
+
+        Returns:
+            Optional[Email]: The parsed Email object, or None if not found.
         """
         try:
             message = (
@@ -84,7 +122,15 @@ class GmailClient:
             return None
 
     def _parse_message_to_email(self, message: Dict[str, Any]) -> Email:
-        """Parses a raw Gmail API message into a structured Email object."""
+        """
+        Parses a raw Gmail API message into a structured Email object.
+
+        Args:
+            message (Dict[str, Any]): Raw message dictionary from Gmail API.
+
+        Returns:
+            Email: Parsed Email object.
+        """
         headers = message["payload"]["headers"]
         header_map = {h["name"].lower(): h["value"] for h in headers}
 
@@ -107,7 +153,15 @@ class GmailClient:
         )
 
     def _extract_message_body(self, payload: Dict[str, Any]) -> str:
-        """Finds and decodes the text/plain part of an email's body."""
+        """
+        Finds and decodes the text/plain part of an email's body.
+
+        Args:
+            payload (Dict[str, Any]): The payload part of the Gmail message.
+
+        Returns:
+            str: The decoded plain text body, or empty string if not found.
+        """
         if payload.get("body", {}).get("data"):
             data = payload["body"]["data"]
             return base64.urlsafe_b64decode(data.encode("ASCII")).decode(
@@ -129,7 +183,15 @@ class GmailClient:
         return ""
 
     def mark_as_read(self, message_id: str) -> bool:
-        """Mark a message as read by removing the 'UNREAD' label."""
+        """
+        Mark a message as read by removing the 'UNREAD' label.
+
+        Args:
+            message_id (str): The Gmail message ID.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         unread_label_id = self.get_label_id_by_name("UNREAD")
         if not unread_label_id:
             logger.error("Could not find the 'UNREAD' label ID.")
@@ -137,7 +199,15 @@ class GmailClient:
         return self._modify_labels(message_id, remove_labels=[unread_label_id])
 
     def mark_as_unread(self, message_id: str) -> bool:
-        """Mark a message as unread by adding the 'UNREAD' label."""
+        """
+        Mark a message as unread by adding the 'UNREAD' label.
+
+        Args:
+            message_id (str): The Gmail message ID.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         unread_label_id = self.get_label_id_by_name("UNREAD")
         if not unread_label_id:
             logger.error("Could not find the 'UNREAD' label ID.")
@@ -145,7 +215,16 @@ class GmailClient:
         return self._modify_labels(message_id, add_labels=[unread_label_id])
 
     def move_to_label(self, message_id: str, destination_label_name: str) -> bool:
-        """Move a message to a new label and remove it from the inbox."""
+        """
+        Move a message to a new label and remove it from the inbox.
+
+        Args:
+            message_id (str): The Gmail message ID.
+            destination_label_name (str): The name of the destination label.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         destination_label_id = self.get_label_id_by_name(destination_label_name)
         inbox_label_id = self.get_label_id_by_name("INBOX")
 
@@ -166,7 +245,17 @@ class GmailClient:
         add_labels: Optional[List[str]] = None,
         remove_labels: Optional[List[str]] = None,
     ) -> bool:
-        """A helper function to add or remove labels from a message."""
+        """
+        A helper function to add or remove labels from a message.
+
+        Args:
+            message_id (str): The Gmail message ID.
+            add_labels (Optional[List[str]]): List of label IDs to add.
+            remove_labels (Optional[List[str]]): List of label IDs to remove.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         body = {
             "addLabelIds": add_labels or [],
             "removeLabelIds": remove_labels or [],

@@ -19,11 +19,25 @@ class GmailAuth:
         credentials_file: str = "credentials.json",
         token_file: str = "config/token.json",
     ):
+        """
+        Initialize GmailAuth.
+
+        Args:
+            credentials_file (str): Path to OAuth2 credentials file.
+            token_file (str): Path to token file for storing user credentials.
+        """
         self.credentials_file = credentials_file
         self.token_file = token_file
 
     def get_credentials(self) -> Optional[Credentials]:
-        """Get valid Gmail API credentials."""
+        """
+        Get valid Gmail API credentials.
+
+        Returns:
+            Optional[Credentials]: Google OAuth2 credentials if available.
+        Raises:
+            FileNotFoundError: If credentials file is missing.
+        """
         creds = None
 
         # Load existing token

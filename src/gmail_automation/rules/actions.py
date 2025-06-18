@@ -15,11 +15,27 @@ class ActionExecutor:
     """Execute actions on emails."""
 
     def __init__(self, gmail_client: GmailClient, database: Database):
+        """
+        Initialize the ActionExecutor.
+
+        Args:
+            gmail_client (GmailClient): The Gmail API client.
+            database (Database): The database connection manager.
+        """
         self.gmail_client = gmail_client
         self.database = database
 
     def execute_actions(self, email: Email, actions: List[Action]) -> bool:
-        """Execute a list of actions on an email."""
+        """
+        Execute a list of actions on an email.
+
+        Args:
+            email (Email): The email to act on.
+            actions (List[Action]): List of actions to execute.
+
+        Returns:
+            bool: True if all actions succeeded, False otherwise.
+        """
         success = True
 
         for action in actions:
@@ -37,7 +53,16 @@ class ActionExecutor:
         return success
 
     def _execute_single_action(self, email: Email, action: Action) -> bool:
-        """Execute a single action on an email."""
+        """
+        Execute a single action on an email.
+
+        Args:
+            email (Email): The email to act on.
+            action (Action): The action to execute.
+
+        Returns:
+            bool: True if the action succeeded, False otherwise.
+        """
         action_type = action.type.lower()
 
         if action_type == "mark_read":
@@ -51,7 +76,15 @@ class ActionExecutor:
             return False
 
     def _mark_as_read(self, email: Email) -> bool:
-        """Mark email as read."""
+        """
+        Mark email as read.
+
+        Args:
+            email (Email): The email to mark as read.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         if self.gmail_client.mark_as_read(email.id):
             # Update database
             with self.database.get_session() as session:
@@ -63,7 +96,15 @@ class ActionExecutor:
         return False
 
     def _mark_as_unread(self, email: Email) -> bool:
-        """Mark email as unread."""
+        """
+        Mark email as unread.
+
+        Args:
+            email (Email): The email to mark as unread.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         if self.gmail_client.mark_as_unread(email.id):
             # Update database
             with self.database.get_session() as session:
@@ -75,7 +116,16 @@ class ActionExecutor:
         return False
 
     def _move_message(self, email: Email, destination: str) -> bool:
-        """Move email to specified destination."""
+        """
+        Move email to specified destination.
+
+        Args:
+            email (Email): The email to move.
+            destination (str): The destination label or folder.
+
+        Returns:
+            bool: True if successful, False otherwise.
+        """
         if self.gmail_client.move_to_label(email.id, destination):
             logger.info(f"Moved email {email.id} to {destination}")
             return True

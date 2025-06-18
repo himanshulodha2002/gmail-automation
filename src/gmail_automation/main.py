@@ -7,7 +7,11 @@ from .utils.helpers import load_env_file, setup_logging
 
 
 def main():
-    """Main CLI function."""
+    """
+    Main CLI function.
+
+    Parses command-line arguments and dispatches to the appropriate subcommand.
+    """
     parser = argparse.ArgumentParser(
         description="Gmail Automation Tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,

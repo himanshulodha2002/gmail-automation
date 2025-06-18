@@ -13,7 +13,13 @@ logger = logging.getLogger(__name__)
 
 
 class Condition(BaseModel):
-    """Rule condition model."""
+    """Rule condition model.
+
+    Attributes:
+        field (str): The email field to check (e.g., 'from', 'subject').
+        predicate (str): The condition predicate (e.g., 'contains', 'equals').
+        value (str): The value to compare against.
+    """
 
     field: str
     predicate: str
@@ -21,14 +27,26 @@ class Condition(BaseModel):
 
 
 class Action(BaseModel):
-    """Rule action model."""
+    """Rule action model.
+
+    Attributes:
+        type (str): The action type (e.g., 'mark_read', 'move_message').
+        destination (str): The destination label or folder (if applicable).
+    """
 
     type: str
     destination: str = Field(default="")
 
 
 class Rule(BaseModel):
-    """Email processing rule model."""
+    """Email processing rule model.
+
+    Attributes:
+        name (str): Rule name.
+        conditions (List[Condition]): List of conditions for the rule.
+        logic (str): Logic to combine conditions ("all" for AND, "any" for OR).
+        actions (List[Action]): Actions to perform if rule matches.
+    """
 
     name: str
     conditions: List[Condition]
@@ -40,10 +58,24 @@ class RuleEngine:
     """Engine for processing email rules."""
 
     def __init__(self, rules_file: str = "config/rules.json"):
+        """
+        Initialize the rule engine and load rules from file.
+
+        Args:
+            rules_file (str): Path to the rules JSON file.
+        """
         self.rules = self._load_rules(rules_file)
 
     def _load_rules(self, rules_file: str) -> List[Rule]:
-        """Load rules from JSON file."""
+        """
+        Load rules from JSON file.
+
+        Args:
+            rules_file (str): Path to the rules JSON file.
+
+        Returns:
+            List[Rule]: List of Rule objects.
+        """
         try:
             with open(rules_file, "r") as f:
                 data = json.load(f)
@@ -56,7 +88,15 @@ class RuleEngine:
             return []
 
     def evaluate_email(self, email: Email) -> List[Action]:
-        """Evaluate email against all rules and return applicable actions."""
+        """
+        Evaluate email against all rules and return applicable actions.
+
+        Args:
+            email (Email): The email to evaluate.
+
+        Returns:
+            List[Action]: List of actions to perform.
+        """
         applicable_actions = []
 
         for rule in self.rules:
@@ -67,7 +107,16 @@ class RuleEngine:
         return applicable_actions
 
     def _evaluate_rule(self, email: Email, rule: Rule) -> bool:
-        """Evaluate if an email matches a rule."""
+        """
+        Evaluate if an email matches a rule.
+
+        Args:
+            email (Email): The email to check.
+            rule (Rule): The rule to evaluate.
+
+        Returns:
+            bool: True if the rule matches, False otherwise.
+        """
         condition_results = []
 
         for condition in rule.conditions:
@@ -84,7 +133,16 @@ class RuleEngine:
             return False
 
     def _evaluate_condition(self, email: Email, condition: Condition) -> bool:
-        """Evaluate a single condition against an email."""
+        """
+        Evaluate a single condition against an email.
+
+        Args:
+            email (Email): The email to check.
+            condition (Condition): The condition to evaluate.
+
+        Returns:
+            bool: True if the condition matches, False otherwise.
+        """
         field_value = self._get_field_value(email, condition.field)
 
         if field_value is None:
@@ -114,7 +172,16 @@ class RuleEngine:
             return False
 
     def _get_field_value(self, email: Email, field: str):
-        """Get field value from email object."""
+        """
+        Get field value from email object.
+
+        Args:
+            email (Email): The email object.
+            field (str): The field name.
+
+        Returns:
+            Any: The value of the field, or None if not found.
+        """
         field_mapping = {
             "from": email.sender,
             "to": email.recipient,
@@ -126,7 +193,17 @@ class RuleEngine:
         return field_mapping.get(field.lower())
 
     def _compare_dates(self, field_value, target_value: str, comparison: str) -> bool:
-        """Compare dates for greater_than/less_than predicates."""
+        """
+        Compare dates for greater_than/less_than predicates.
+
+        Args:
+            field_value: The datetime value from the email.
+            target_value (str): The target date expression.
+            comparison (str): "greater" or "less".
+
+        Returns:
+            bool: Result of the comparison.
+        """
         if not isinstance(field_value, datetime):
             return False
 
@@ -143,7 +220,15 @@ class RuleEngine:
         return False
 
     def _parse_relative_date(self, date_expr: str) -> Optional[datetime]:
-        """Parse relative date expressions like '7 days ago'."""
+        """
+        Parse relative date expressions like '7 days ago'.
+
+        Args:
+            date_expr (str): The relative date expression.
+
+        Returns:
+            Optional[datetime]: The calculated datetime, or None if invalid.
+        """
         try:
             parts = date_expr.lower().split()
             if len(parts) == 3 and parts[2] == "ago":
