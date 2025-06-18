@@ -1,8 +1,8 @@
 """Script to process stored emails with rules.
 
 This script loads emails from the database, evaluates them against a set of rules
-defined in a JSON file, and executes actions (such as marking as read or moving messages)
-using the Gmail API.
+defined in a JSON file, and executes actions (such as marking as read or moving
+messages) using the Gmail API.
 
 Usage:
     python process_rules.py --rules config/rules.json --dry-run
