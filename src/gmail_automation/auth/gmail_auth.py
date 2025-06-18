@@ -50,4 +50,3 @@ class GmailAuth:
                 token.write(creds.to_json())
         
         return creds
-        return creds

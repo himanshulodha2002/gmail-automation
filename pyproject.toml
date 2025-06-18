@@ -27,12 +27,12 @@ dev = [
 [tool.ruff]
 line-length = 88
 target-version = "py39"
-select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20"]
+select = ["E", "F", "I"]
 ignore = ["S101"]  # Allow assert in tests
 
 [tool.ruff.per-file-ignores]
 "tests/*" = ["S101"]
 
-[project.scripts]
-fetch-emails = "gmail_automation.scripts.fetch_emails:main"
-process-rules = "gmail_automation.scripts.process_rules:main"
+[tool.pyrefly]
+project_excludes = ["**/.[!/.]*", "**/*venv/**", "./src"]
+search_path = ["./app"]

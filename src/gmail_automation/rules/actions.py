@@ -6,28 +6,9 @@ from typing import List, Optional
 from ..gmail.client import GmailClient
 from ..database.models import Email
 from ..database.connection import Database
-from .engine import Action as BaseAction, Rule as BaseRule
+from .engine import Action
 
 logger = logging.getLogger(__name__)
-
-
-class Action(BaseAction):
-    """Defines an action to be taken if conditions are met."""
-
-    type: str = Field(..., description="The type of action to perform (e.g., 'move', 'mark_as_read').")
-    value: Optional[str] = Field(None, description="The value associated with the action (e.g., folder name).")
-    label: Optional[str] = Field(None, description="The label to be added to the email.")
-
-
-class Rule(BaseRule):
-    """Defines a rule for processing emails."""
-
-    id: int
-    name: str
-    conditions: dict
-    actions: List[Action]
-    is_active: bool = True
-
 
 class ActionExecutor:
     """Execute actions on emails."""

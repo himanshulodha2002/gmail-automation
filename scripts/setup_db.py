@@ -1,8 +1,7 @@
-import os
 import sys
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from src.gmail_automation.database.models import Base
+from gmail_automation.database.models import Base
+
 
 def setup_database(db_url: str):
     engine = create_engine(db_url)

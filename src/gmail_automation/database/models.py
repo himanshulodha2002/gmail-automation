@@ -1,7 +1,8 @@
 """Database models for email storage."""
 
+import json
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import DateTime, String, Text, Boolean
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -19,13 +20,15 @@ class Email(Base):
     
     id: Mapped[str] = mapped_column(String(50), primary_key=True)
     thread_id: Mapped[str] = mapped_column(String(50), nullable=False)
-    from_address: Mapped[str] = mapped_column(String(255), nullable=False)
-    to_address: Mapped[Optional[str]] = mapped_column(String(255))
+    message_id: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    sender: Mapped[str] = mapped_column(String(255), nullable=False)
+    recipient: Mapped[Optional[str]] = mapped_column(String(255))
     subject: Mapped[Optional[str]] = mapped_column(String(500))
-    message: Mapped[Optional[str]] = mapped_column(Text)
-    received_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    body: Mapped[Optional[str]] = mapped_column(Text)
+    received_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
-    labels: Mapped[Optional[str]] = mapped_column(String(500))  # JSON string
+    labels: Mapped[Optional[str]] = mapped_column(Text)  # Storing as a JSON string
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime, 
         default=datetime.utcnow,
@@ -40,3 +43,9 @@ class Email(Base):
     
     def __repr__(self) -> str:
         return f"<Email(id='{self.id}', subject='{self.subject}')>"
+
+    def get_labels(self) -> List[str]:
+        """Returns the labels from the JSON string."""
+        if self.labels:
+            return json.loads(self.labels)
+        return []

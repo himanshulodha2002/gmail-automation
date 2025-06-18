@@ -10,10 +10,15 @@ from sqlalchemy.orm import Session, sessionmaker
 from .models import Base
 
 
+def get_db_url() -> str:
+    """Get database URL from environment or use a default."""
+    return os.getenv("DATABASE_URL", "sqlite:///gmail_automation.db")
+
+
 class Database:
     """Database connection manager."""
     
-    def __init__(self, database_url: str = "sqlite:///emails.db"):
+    def __init__(self, database_url: str):
         self.database_url = database_url
         self.engine = create_engine(database_url, echo=False)
         self.SessionLocal = sessionmaker(

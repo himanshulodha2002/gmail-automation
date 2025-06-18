@@ -113,11 +113,11 @@ class RuleEngine:
     def _get_field_value(self, email: Email, field: str):
         """Get field value from email object."""
         field_mapping = {
-            "from": email.from_address,
-            "to": email.to_address,
+            "from": email.sender,
+            "to": email.recipient,
             "subject": email.subject,
-            "message": email.message,
-            "received_date": email.received_date,
+            "message": email.body,
+            "received_date": email.received_at,
         }
         
         return field_mapping.get(field.lower())
