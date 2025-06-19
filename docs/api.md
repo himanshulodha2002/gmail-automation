@@ -27,11 +27,7 @@ The Gmail API requires OAuth 2.0 for authentication. The project implements the 
 
 ## Fetching Emails
 
-Once authenticated, you can fetch emails using the Gmail API. The `fetch_emails.py` script handles the email fetching logic. Key functionalities include:
-
-- **Batch Fetching**: Retrieve emails in batches to optimize performance.
-- **Pagination**: Handle pagination to fetch all emails.
-- **Rate Limiting**: Implement rate limiting to comply with Gmail API usage policies.
+Once authenticated, you can fetch emails using the Gmail API. The `fetch_emails.py` script handles the email fetching logic.
 
 ### Example Usage
 

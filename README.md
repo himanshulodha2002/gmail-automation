@@ -4,18 +4,18 @@ A clean and modern Python project that connects to the Gmail API and processes e
 
 ## Features
 
-- 🔐 OAuth2 authentication with Gmail API
-- 📧 Fetch emails using Gmail REST API
-- 💾 Store emails in SQLite database (in `data/`)
-- 📋 Rule-based email processing with JSON configuration
-- 🎯 Actions: mark as read/unread, move messages
+- OAuth2 authentication with Gmail API
+- Fetch emails using Gmail REST API
+- Store emails in SQLite database (in `data/`)
+- Rule-based email processing with JSON configuration
+- Actions: mark as read/unread, move messages
 
 ## Setup
 
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/gmail-automation.git
+    git clone https://github.com/himanshulodha2002/gmail-automation.git
     cd gmail-automation
     ```
 

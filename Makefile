@@ -4,7 +4,7 @@
 DB_DIR ?= data
 DB_FILE ?= gmail_automation.db
 DB_URL ?= sqlite:///./$(DB_DIR)/$(DB_FILE)
-MAX_RESULTS ?= 10
+MAX_RESULTS ?= 20
 
 help:
 	@echo "Usage: make <target>"
