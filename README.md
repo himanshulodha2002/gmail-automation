@@ -140,6 +140,7 @@ gmail-automation/
 
 Watch a quick demo of Gmail Automation in action:
 
+[Watch the demo, Hi-res](https://youtu.be/iJXP1p5nGoo)  
 [Watch the demo](https://www.youtube.com/watch?v=8UStdgFXb_s)  
 [Alternate demo](https://drive.google.com/drive/folders/1Ydu78MpyvQ4VzNkjljA9Ji5Kc5_N-OTQ?usp=sharing)
 
