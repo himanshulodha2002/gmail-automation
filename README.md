@@ -35,12 +35,6 @@ A clean and modern Python project that connects to the Gmail API and processes e
    make install
    ```
 
-   **To install all optional dependencies:**
-
-   ```bash
-   make install --all-extras
-   ```
-
 4. **Set up Google Cloud project and OAuth 2.0:**
 
    - Go to the [Google Cloud Console](https://console.cloud.google.com/).
