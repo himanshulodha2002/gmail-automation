@@ -122,6 +122,12 @@ gmail-automation/
 └── README.md
 ```
 
+## Video Demo
+
+Watch a quick demo of Gmail Automation in action:
+
+[[Watch the demo]](https://drive.google.com/drive/folders/1Ydu78MpyvQ4VzNkjljA9Ji5Kc5_N-OTQ?usp=sharing)
+
 ## Notes
 
 - The SQLite database is stored in the `data/` directory and is gitignored.
